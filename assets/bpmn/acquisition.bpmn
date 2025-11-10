@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_Acq" isExecutable="false">
+    <bpmn:startEvent id="Start" name="Opportunity Identified"/>
+    <bpmn:task id="Scan" name="Initial screening (Title, Planning, Constraints)"/>
+    <bpmn:task id="Model" name="High-level Model (GDV/Costs)"/>
+    <bpmn:exclusiveGateway id="Res" name="Residential?"/>
+    <bpmn:exclusiveGateway id="Main" name="Main Home?"/>
+    <bpmn:task id="ResBands" name="SDLT: Residential bands"/>
+    <bpmn:task id="AddBands" name="SDLT: Additional property bands"/>
+    <bpmn:task id="NonResBands" name="SDLT: Non-res/Mixed bands"/>
+    <bpmn:task id="CIL" name="CIL & S106 Check (London)"/>
+    <bpmn:task id="DD" name="Detailed DD (Legal, Tech, Surveys)"/>
+    <bpmn:task id="IC" name="Investment Committee"/>
+    <bpmn:task id="HoT" name="Heads of Terms & Solicitor Instruction"/>
+    <bpmn:task id="Ex" name="Exchange & Completion"/>
+    <bpmn:endEvent id="End" name="Handover to PM"/>
+
+    <bpmn:sequenceFlow id="f1" sourceRef="Start" targetRef="Scan"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="Scan" targetRef="Model"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="Model" targetRef="Res"/>
+    <bpmn:sequenceFlow id="f4" sourceRef="Res" targetRef="Main"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${residential}]]></bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f5" sourceRef="Res" targetRef="NonResBands"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${!residential}]]></bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f6" sourceRef="Main" targetRef="ResBands"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${mainHome}]]></bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f7" sourceRef="Main" targetRef="AddBands"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${!mainHome}]]></bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f8" sourceRef="ResBands" targetRef="CIL"/>
+    <bpmn:sequenceFlow id="f9" sourceRef="AddBands" targetRef="CIL"/>
+    <bpmn:sequenceFlow id="f10" sourceRef="NonResBands" targetRef="CIL"/>
+    <bpmn:sequenceFlow id="f11" sourceRef="CIL" targetRef="DD"/>
+    <bpmn:sequenceFlow id="f12" sourceRef="DD" targetRef="IC"/>
+    <bpmn:sequenceFlow id="f13" sourceRef="IC" targetRef="HoT"/>
+    <bpmn:sequenceFlow id="f14" sourceRef="HoT" targetRef="Ex"/>
+    <bpmn:sequenceFlow id="f15" sourceRef="Ex" targetRef="End"/>
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="D1">
+    <bpmndi:BPMNPlane id="P1" bpmnElement="Process_Acq">
+      <bpmndi:BPMNShape bpmnElement="Start"><dc:Bounds x="120" y="80" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Scan"><dc:Bounds x="200" y="60" width="220" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Model"><dc:Bounds x="460" y="60" width="220" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Res" isMarkerVisible="true"><dc:Bounds x="720" y="70" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Main" isMarkerVisible="true"><dc:Bounds x="840" y="70" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="ResBands"><dc:Bounds x="920" y="10" width="230" height="60"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="AddBands"><dc:Bounds x="920" y="90" width="230" height="60"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="NonResBands"><dc:Bounds x="780" y="160" width="230" height="60"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="CIL"><dc:Bounds x="1180" y="90" width="220" height="60"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="DD"><dc:Bounds x="1440" y="90" width="220" height="60"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="IC"><dc:Bounds x="1700" y="90" width="220" height="60"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="HoT"><dc:Bounds x="1960" y="90" width="220" height="60"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="Ex"><dc:Bounds x="2220" y="90" width="220" height="60"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="End"><dc:Bounds x="2480" y="96" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="f1"><di:waypoint x="156" y="98"/><di:waypoint x="200" y="100"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f2"><di:waypoint x="420" y="100"/><di:waypoint x="460" y="100"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f3"><di:waypoint x="680" y="100"/><di:waypoint x="720" y="95"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f4"><di:waypoint x="770" y="95"/><di:waypoint x="840" y="95"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f5"><di:waypoint x="745" y="120"/><di:waypoint x="790" y="190"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f6"><di:waypoint x="890" y="95"/><di:waypoint x="920" y="40"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f7"><di:waypoint x="890" y="95"/><di:waypoint x="920" y="120"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f8"><di:waypoint x="1150" y="40"/><di:waypoint x="1180" y="120"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f9"><di:waypoint x="1150" y="120"/><di:waypoint x="1180" y="120"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f10"><di:waypoint x="1010" y="190"/><di:waypoint x="1180" y="120"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f11"><di:waypoint x="1400" y="120"/><di:waypoint x="1440" y="120"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f12"><di:waypoint x="1660" y="120"/><di:waypoint x="1700" y="120"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f13"><di:waypoint x="1920" y="120"/><di:waypoint x="1960" y="120"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f14"><di:waypoint x="2180" y="120"/><di:waypoint x="2220" y="120"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="f15"><di:waypoint x="2460" y="120"/><di:waypoint x="2480" y="114"/></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
